@@ -1,9 +1,7 @@
-name: Rust CI/CD
+name: Build and Release
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
   release:
     types: [created]
@@ -14,47 +12,73 @@ env:
 jobs:
 
   build:
-    name: Build and Test
-    runs-on: ubuntu-latest
+
+    name: Build binaries
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        include:
+
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            suffix: linux
+
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            suffix: linux-static
+
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            suffix: macos
+
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            suffix: windows.exe
 
     steps:
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
 
-      - name: Build workspace
-        run: cargo build --workspace --release
+      - name: Install musl tools
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: sudo apt-get update && sudo apt-get install musl-tools
 
-      - name: Run tests
-        run: cargo test --workspace
+      - name: Build
+        run: cargo build --workspace --release --target ${{ matrix.target }}
 
-  release:
-    name: Build Release Binaries
-    runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+      - name: Strip binaries (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          strip target/${{ matrix.target }}/release/analyzer || true
+          strip target/${{ matrix.target }}/release/multi-stresser || true
 
-    steps:
+      - name: Rename binaries
+        run: |
+          mkdir dist
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cp target/${{ matrix.target }}/release/analyzer.exe dist/analyzer-${{ matrix.suffix }}
+            cp target/${{ matrix.target }}/release/multi-stresser.exe dist/multi-stresser-${{ matrix.suffix }}
+          else
+            cp target/${{ matrix.target }}/release/analyzer dist/analyzer-${{ matrix.suffix }}
+            cp target/${{ matrix.target }}/release/multi-stresser dist/multi-stresser-${{ matrix.suffix }}
+          fi
+        shell: bash
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Build release binaries
-        run: cargo build --workspace --release
-
-      - name: Upload analyzer binary
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: analyzer
-          path: target/release/analyzer
+          name: binaries-${{ matrix.suffix }}
+          path: dist/
 
-      - name: Upload multi-stresser binary
-        uses: actions/upload-artifact@v4
+      - name: Upload to Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
         with:
-          name: multi-stresser
-          path: target/release/multi-stresser
+          files: dist/*
