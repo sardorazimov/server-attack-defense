@@ -1,0 +1,37 @@
+# 🐬 Server Attack & Defense Lab
+
+Dolphin Strike is a Rust-based cyber security lab for simulating and analyzing network attacks and defenses in a controlled environment.
+
+This project helps understand how attacks work and how to detect and defend against them.
+
+---
+
+## ⚙️ Components
+
+### attack-tools/
+Simulates attack scenarios.
+
+Tools:
+- multi-stresser → high-concurrency connection stress tester
+- (planned) port scanner
+- (planned) slowloris simulator
+
+---
+
+### defense-lab/
+Detects and analyzes suspicious activity.
+
+Modules:
+- analyzer → detects connection floods
+- JSON attack logging
+- IP tracking
+
+---
+
+## 🚀 Getting Started
+
+### Run analyzer
+
+```bash
+cd defense-lab/analyzer
+cargo run --release
