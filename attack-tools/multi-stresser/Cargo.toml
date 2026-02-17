@@ -1,0 +1,9 @@
+[package]
+name = "multi-stresser"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+reqwest = "0.13.2"
+tokio = { version = "1.49.0", features = ["full"] }
+rand = "0.8"

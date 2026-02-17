@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "attack-tools/multi-stresser",
+    "defense-lab/analyzer",
+]
+resolver = "2"
