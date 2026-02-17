@@ -1,12 +1,34 @@
-# Rust
+# Rust build files
 target/
 **/target/
+
+# Cargo
+Cargo.lock
+
+# Logs
+*.log
+attack-log.json
 
 # macOS
 .DS_Store
 
+# Linux
+*.swp
+
 # VSCode
 .vscode/
 
-# Logs
-*.log
+# JetBrains
+.idea/
+
+# Environment
+.env
+
+# Temp
+tmp/
+temp/
+
+# Binary output
+*.exe
+*.out
+*.bin
