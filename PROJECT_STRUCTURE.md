@@ -1,63 +1,91 @@
-
----
-
-# 3️⃣ PROJECT_STRUCTURE.md
-
-`PROJECT_STRUCTURE.md`
-
-```md
-# Project Structure
-
-server-attack-defense/
-
-attack-tools/
-    multi-stresser/
-        src/
-        Cargo.toml
-
-defense-lab/
-    analyzer/
-        src/
-        Cargo.toml
-
-target/
-.gitignore
-README.md
-LICENSE
-SECURITY.md
-CONTRIBUTING.md
-
----
-
-## attack-tools
-
-Simulates network stress and attack scenarios.
-
-Current tools:
-- multi-stresser
-
-Planned:
-- port scanner
-- slowloris simulator
-
----
-
-## defense-lab
-
-Detects and analyzes suspicious activity.
-
-Current modules:
-- analyzer
-
-Features:
-- connection tracking
-- attack detection
-- JSON logging
-
----
-
-## Future modules
-
-- firewall integration
-- intrusion detection
-- real-time monitoring
+dolphinx/
+│
+├── Cargo.toml
+├── Cargo.lock
+├── README.md
+├── LICENSE
+├── SECURITY.md
+├── CONTRIBUTING.md
+├── PROJECT_STRUCTURE.md
+│
+├── .gitignore
+├── .github/
+│   └── workflows/
+│       └── rust.yaml
+│
+├── src/
+│   │
+│   ├── main.rs
+│   │
+│   ├── cli/
+│   │   ├── mod.rs
+│   │   ├── parser.rs
+│   │   └── commands.rs
+│   │
+│   ├── core/
+│   │   ├── mod.rs
+│   │   ├── engine.rs
+│   │   ├── worker.rs
+│   │   ├── network.rs
+│   │   ├── socket.rs
+│   │   └── runtime.rs
+│   │
+│   ├── metrics/
+│   │   ├── mod.rs
+│   │   ├── stats.rs
+│   │   ├── monitor.rs
+│   │   └── benchmark.rs
+│   │
+│   ├── attack/
+│   │   ├── mod.rs
+│   │   │
+│   │   ├── scan/
+│   │   │   ├── mod.rs
+│   │   │   ├── port/
+│   │   │   │   ├── mod.rs
+│   │   │   │   └── scanner.rs
+│   │   │   │
+│   │   │   └── service/
+│   │   │       ├── mod.rs
+│   │   │       └── fingerprint.rs
+│   │   │
+│   │   ├── stress/
+│   │   │   ├── mod.rs
+│   │   │   ├── tcp.rs
+│   │   │   ├── http.rs
+│   │   │   └── slowloris.rs
+│   │   │
+│   │   ├── fuzz/
+│   │   │   ├── mod.rs
+│   │   │   └── fuzzer.rs
+│   │   │
+│   │   └── exploit/
+│   │       ├── mod.rs
+│   │       └── templates.rs
+│   │
+│   ├── defense/
+│   │   ├── mod.rs
+│   │   ├── analyzer.rs
+│   │   ├── firewall.rs
+│   │   ├── detector.rs
+│   │   └── blacklist.rs
+│   │
+│   └── utils/
+│       ├── mod.rs
+│       ├── logger.rs
+│       ├── banner.rs
+│       └── config.rs
+│
+│
+├── docs/
+│   ├── architecture.md
+│   ├── modules.md
+│   ├── cli.md
+│   └── roadmap.md
+│
+├── logs/
+│   ├── attack.log
+│   ├── benchmark.json
+│   └── defense.log
+│
+└── target/
